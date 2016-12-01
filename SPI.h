@@ -81,21 +81,21 @@
   #define SPI_AVR_EIMSK  GIMSK
 #endif
 
-class TinySPISettings {
+class SPISettings {
 public:
-	TinySPISettings(uint8_t bitOrder, uint8_t dataMode)
+	SPISettings(uint8_t bitOrder, uint8_t dataMode)
 	{
 		init_AlwaysInline(bitOrder, dataMode);
 	}
 
-	TinySPISettings()
+	SPISettings()
 	{
 		init_AlwaysInline(LSBFIRST, SPI_MODE0);
 	}
 
 	/* Syntax compability with the Arduino's default SPI Library */
 	/* The ATTiny MCUs do not have SPI clock configuration */
-	TinySPISettings(uint32_t clock, uint8_t bitOrder, uint8_t dataMode)
+	SPISettings(uint32_t clock, uint8_t bitOrder, uint8_t dataMode)
 	{
 		init_AlwaysInline(bitOrder, dataMode);
 	}
@@ -103,7 +103,7 @@ private:
 	void init_AlwaysInline(uint8_t bitOrder, uint8_t dataMode)
 		__attribute__((__always_inline__))
 		{
-			/* Pack into the TinySPISettings class */
+			/* Pack into the SPISettings class */
 			usicr = _BV(USIWM0) | _BV(USICLK) | (dataMode & SPI_MODE_MASK);
 			this->bitOrder = bitOrder == LSBFIRST ? 0 : 1;
 		}
@@ -137,7 +137,7 @@ public:
 	/* Before using SPI.transfer() or asserting chip select pins, */
 	/* this function is used to gain exclusive access to the SPI bus */
 	/* and configure the correct settings. */
-	inline static void beginTransaction(TinySPISettings settings)
+	inline static void beginTransaction(SPISettings settings)
 	{
 		if (interruptMode > 0) {
 			uint8_t sreg = SREG;
